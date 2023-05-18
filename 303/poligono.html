@@ -33,56 +33,7 @@
 		const renderer = new THREE.WebGLRenderer();
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(renderer.domElement);
-		// figura
-		var nlados=6;
-		var altura=7;
-		var ladoigual=8;
-
-       //veritices
-		function poligono(nlados, ladoigual,altura) {
-        const vertices = [];
-        const ang = 2*Math.PI/nlados;
-        for (let i = 0; i <= nlados; i++) {
-        let x = ladoigual * Math.cos(i * ang);
-        let z = ladoigual * Math.sin(i * ang);
-		let y= altura;
-        vertices[i] = new THREE.Vector3(x, y, z);
-        }
-        return vertices;
-}
-// geometria bases
-function base(nlados, ladoigual,altura){
-
-	var figura= new THREE.Geometry();
-	var vertices=poligono(nlados, ladoigual,altura);
-	var largo=vertices.length;
-	 for(let i = 1; i < 9; i++){
-    x = vertices[i][0];
-    y = vertices[i][1];
-    z = vertices[i][2];
-    var vector = new THREE.Vector3(x, y, z);
-    figura.vertices.push(vector);
-	 }
-	 var x = new THREE.Vector3(1, 0, 0);
-     var y = new THREE.Vector3(0, 1, 0);
-      var z = new THREE.Vector3(0, 0, 1);
-}
-base(nlados,0, ladoigual);
-base(nlados,altura, ladoigual);
-
-//matrerial del póligono
-     const material = new THREE.MeshPhongMaterial({
-    color: 0xff0000,
-    specular: 0xffffff,
-    shininess: 50,
-    side: THREE.DoubleSide
-});
-
-// Crear la malla del poligono
-const malla = new THREE.Mesh(geometria, material);
-scene.add(malla);
-
-// Crear los ejes principales XYZ
+        // Crear los ejes principales XYZ
 const ejes = new THREE.AxesHelper(5);
 scene.add(ejes);
 
@@ -109,6 +60,67 @@ function render() {
     requestAnimationFrame(render);
     renderer.render(scene, camera);
 }
+//FUNCIONES DE LA FIGURA
+        
+function POLIGONO(vx){
+            var FIGURA = new THREE.Geometry();
+            var largoV = vx.length;
+            for (var i = 0; i < largoV; i++){
+            var [x,y,z]=[vx[i][0],vx[i][1],vx[i][2]]
+                var vector = new THREE.Vector3(x, y, z);
+                FIGURA.vertices.push(vector);
+            }
+        return FIGURA;
+        }
+
+        function Poligono(NLADOS,LADOSIGUALES,ALTURA){
+            const P=[];
+            const F = (2*Math.PI)/NLADOS;
+
+            for(let i=0; i<=NLADOS; i++){
+                let x = LADOSIGUALES*Math.cos(i*F);
+                let y = ALTURA;
+                let z = LADOSIGUALES*Math.sin(i*F);
+                //(x,y,0);
+                P[i] = [x,y,z];
+            }
+            return P;
+        }
+
+        //CREACION DE LA FIGURA GEOMETRIA
+        const ancho = 2;
+        const lado = 6;
+        const alto =4;
+
+        function POLIGONO1(lado, ancho, alto){
+        
+            const material = new THREE.MeshBasicMaterial({color : 0x78FF00});
+
+            const v1 = Poligono(lado,ancho,0);
+            const g1 = POLIGONO(v1);
+            const f1 = new THREE.Line(g1, material);
+    
+            const v2 = Poligono(lado,ancho,alto);
+            const g2 = POLIGONO(v2);
+            const f2 = new THREE.Line(g2, material);
+
+
+            const vertices=[];
+            for(let i=0; i<=lado; i++){
+                vertices[0]= v1[i];
+                vertices[1]= v2[i];
+                const geometria = POLIGONO(vertices);
+                const figura = new THREE.Line(geometria, material);
+                scene.add(figura);
+            }
+
+
+            scene.add(f1);
+            scene.add(f2);
+        }
+
+        POLIGONO1(lado,ancho,alto);
+
 render();
 
 
